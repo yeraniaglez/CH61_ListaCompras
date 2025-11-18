@@ -12,6 +12,7 @@ const cuerpoTabla = tablaListaCompras.getElementsByTagName("tbody").item(0);
 let cont = 0;
 let totalEnProductos = 0;
 let costoTotal = 0; 
+let datos = new Array();//[];
 
 function validarCantidad(cantidad) {
     if (cantidad.length == 0) {
@@ -63,6 +64,16 @@ btnAgregar.addEventListener("click", function (event) {
                     <td>${txtNumber.value}</td>
                     <td>${precio}</td>
                     </tr>`;
+
+        let elemento ={
+            "cont": cont,
+            "nombre": txtName.value, 
+            "cantidad": txtNumber.value, 
+            "precio": precio
+        };
+
+        datos.push(elemeno);
+        localStorage.setItem("datos", JSON. stringify(datos));
         
         totalEnProductos += Number(txtNumber.value);
         costoTotal += precio * Number(txtNumber.value);
@@ -92,9 +103,23 @@ btnAgregar.addEventListener("click", function (event) {
 
 window.addEventListener("load", function(event){
     event.preventDefault();
+    if(this.localStorage.getItem("datos")!=null){
+        datos= JSON.parse(this.localStorage.getItem("datos"));
+        datos.forEach((e)=>{
+            let row= `<tr>
+                <td>${e.cont}</td>
+                <td>${e.nombre}</td>
+                <td>${e.cantidad}</td>
+                <td>${e.precio}</td>
+                </tr>`;
+            cuerpoTabla.insertAdjacentHTML("beforeend", row);
+        });
+
+            }// datos !=null
+            
     if(this.localStorage.getItem("resumen")!=null){
         let resumen=JSON.parse(this.localStorage.getItem("resumen"));
-        cont= resumen.cont;
+        cont = resumen.cont;
         totalEnProductos= resumen.totalEnProductos;
         costoTotal=resumen.costoTotal;
     }//!null
